@@ -1,13 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
+import { v4 as uuid } from 'uuid'
+import { createUser } from '~/repositories/user'
+import { updatePress } from '~/repositories/press'
+import { useHelloPress } from '~/services/hooks/press'
 
 const Page = () => {
-  const [pressed, setPressed] = useState<boolean>(false)
+  const [press] = useHelloPress()
+
+  useEffect(() => {
+    const userID = uuid()
+    const data = { name: userID, x: 200, y: 200 }
+    createUser(userID, data)
+  }, [])
+
   return (
     <Contaienr>
-      <Button data-pressed={pressed} onClick={() => setPressed((prev) => !prev)}>
-        <Text>Press</Text>
-      </Button>
+      {press && (
+        <Button data-pressed={press.pressed} onClick={() => updatePress('hello', { pressed: !press.pressed })}>
+          <Text>Press</Text>
+        </Button>
+      )}
     </Contaienr>
   )
 }
